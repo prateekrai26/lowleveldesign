@@ -4,6 +4,7 @@ package com.prateek.lld.splitwise;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -182,7 +183,8 @@ class DefaultBalanceCalculator implements BalanceCalculator{
            for(String userID : map.keySet()){
                totalExpenseMap.put(userID , totalExpenseMap.getOrDefault(userID , 0.0) + map.get(userID));
            }
-            payingUserAmoutMap.put(expense.getSplit().payingUserId,  payingUserAmoutMap.getOrDefault(expense.getSplit().payingUserId , 0.0) + expense.split.amount);
+            payingUserAmoutMap.put(expense.getSplit().payingUserId,
+                    payingUserAmoutMap.getOrDefault(expense.getSplit().payingUserId , 0.0) + expense.split.amount);
         }
         Map<String ,  Double > balanceMap = new HashMap<>();
         for(String userId  : totalExpenseMap.keySet()){
@@ -300,10 +302,17 @@ public class SplitWiseApp {
         splitWise.addExpense("group1" ,
                 new Expense("expense2" , "bill" , new SplitByExactAmount("user2" , 250.0 ,
                         Map.of("user1" , 150.0 , "user2" , 100.0
-                        ))));
+             ))));
 
         System.out.println(splitWise.getExpenseMap("group1"));
 
         balanceCalculator.calculateBalance(new ArrayList<>(splitWise.getExpenseMap("group1").values()));
+        Class splitwiseClass = SplitWise.class;
+
+        Method[] methods = splitwiseClass.getDeclaredMethods();
+
+        for(Method method : methods){
+            System.out.println(method.getName());
+        }
     }
 }
